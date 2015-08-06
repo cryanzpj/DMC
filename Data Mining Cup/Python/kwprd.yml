@@ -1,0 +1,35 @@
+costFn: crossEntOnePenalty
+decisionFn: hardLimit
+model: all
+stages:
+    - name: kwUnfold
+      type: timeUnfold
+    - name: kwLut
+      type: lut
+      inputDim: 492
+      outputDim: 50
+      initRange: 0.1
+      initSeed: 2
+      learningRate: 0.05
+      learningRateAnnealConst: 0.01
+      momentum: 0.9
+    - name: kwFold
+      type: timeFold
+      timespan: 6
+    - name: kwTimeSum
+      type: timeSum
+    - name: sigmoid
+      type: map
+      activeFn: sigmoid
+      inputDim: 50
+      outputDim: 5
+      learningRate: 0.01
+      learningRateAnnealConst: 0.01
+      momentum: 0.9
+    - name: all
+      type: sequential
+      stages:
+          - kwLut
+          - kwFold
+          - kwTimeSum
+          - sigmoid
